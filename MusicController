@@ -1,0 +1,74 @@
+//This is the code that detects how well you're doing in terms of keeping beat. You calculate the difference between the input and time elapsed every beat. For a particular tempo,
+the elapsed time is calculated as BPM/60. So if we're at 60BPM, 1 second elapses between each beat.
+
+using UnityEngine;
+using UnityEngine.UI;
+
+public class MusicController : MonoBehaviour
+{
+    public ScoreManager scoreManager;
+    public float perfectWindow = 0.05f; // in seconds
+    public float goodWindow = 0.1f; // in seconds
+
+    private float beatInterval; // in seconds
+    private float nextBeatTime;
+
+    public Text feedbackText;
+
+    public int rhythmScore;
+    
+
+    void Start()
+    {
+        // Calculate the time interval between beats at 120 bpm
+        beatInterval = 60f / 60f;
+
+        // Start the first beat at the current time
+        nextBeatTime = Time.time + beatInterval;
+
+
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Get the current time and calculate the timing difference from the next beat
+            float currentTime = Time.time;
+            float timingDifference = Mathf.Abs(currentTime - nextBeatTime);
+
+            // Provide feedback based on the timing difference
+            if (timingDifference <= perfectWindow)
+            {
+                //Debug.Log("Perfect!");
+                feedbackText.text = "Perfect!";
+                rhythmScore = 1;
+                
+                
+            }
+            else if (timingDifference <= goodWindow)
+            {
+                //Debug.Log("Good!");
+                feedbackText.text = "Good!";
+                rhythmScore = 0;
+                
+                
+            }
+            else
+            {
+                //Debug.Log("Missed!");
+                feedbackText.text = "Missed!";
+                rhythmScore = 2;
+
+                // Reset the next beat time to the closest upcoming beat
+                float timeSinceLastBeat = currentTime - nextBeatTime;
+                int missedBeats = Mathf.FloorToInt(timeSinceLastBeat / beatInterval) + 1;
+                nextBeatTime += missedBeats * beatInterval;
+            }
+            Debug.Log(rhythmScore);
+
+            // Schedule the next beat
+            nextBeatTime += beatInterval;
+        }
+    }
+}
