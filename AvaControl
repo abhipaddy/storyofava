@@ -1,0 +1,118 @@
+//This is the code I wrote to control Ava at her levels of depth. Instead of using any kind of 3D scene, I used a scale in and scale out method.
+//This helped maintain the pixel art!
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CubeControl : MonoBehaviour
+{
+    public float speed = 5.0f;
+    public float yLimit = 2.5f;
+    public float zLimit = 5.0f;
+    public float zSpeed = 5.0f;
+    public float xLimit = 2.5f;
+    public float xSpeed = 5.0f;
+
+    public float minAvaScale = 0.5f;
+    public float maxAvaScale = 2.0f;
+
+    //We store Ava's inner and outer states as enums. If she's scaled out, it's outer state and reverse if she's scaled all the way in.
+    public enum AvaState
+    {
+        outerState, innerState
+    }
+
+    AvaState currentState = AvaState.outerState;
+
+    private Vector3 originalPosition;
+    public Vector3 currentScale;
+
+    private bool canMoveInZDirection = false;
+    private bool canMoveInXDirection = false;
+
+    private void Start()
+    {
+        // Save the original position of Ava
+        originalPosition = transform.position;
+        currentScale = transform.localScale;
+        
+    }
+
+    public AvaState GetCurrentState()
+    {
+        return currentState;
+    }
+    
+    private void Update()
+    {
+        // Move Ava based on input from the arrow keys
+        float verticalInput = Input.GetAxis("Vertical");
+        float horizontalInput = Input.GetAxis("Horizontal");
+
+        //For now, we've just used a key combination to zoom her in and out. Which is basically shift+W to go in, and shift+S to come out
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                if (transform.localScale.x > 0.5 && transform.localScale.y > 0.5)
+                {
+                    transform.localScale = new Vector3(transform.localScale.x - 0.02f, transform.localScale.y - 0.02f, 1);
+                    currentState = AvaState.innerState;
+                }
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                if (transform.localScale.x < 1 && transform.localScale.y < 1)
+                {
+                    transform.localScale = new Vector3(transform.localScale.x + 0.02f, transform.localScale.y + 0.02f, 1);
+                    currentState = AvaState.outerState;
+                }
+            }
+        }
+        else
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                transform.position += Vector3.up * speed * Time.deltaTime;
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                transform.position -= Vector3.up * speed * Time.deltaTime;
+            }
+        }
+        
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.position += Vector3.left * speed * Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += Vector3.right * speed * Time.deltaTime;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W))
+        {
+            canMoveInZDirection = true;
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.S))
+        {
+            canMoveInZDirection = true;
+        }
+
+        
+
+
+    }
+
+    
+}
+
+
+
+
+
