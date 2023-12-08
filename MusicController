@@ -1,5 +1,5 @@
 //This is the code that detects how well you're doing in terms of keeping beat. You calculate the difference between the input and time elapsed every beat. For a particular tempo,
-the elapsed time is calculated as BPM/60. So if we're at 60BPM, 1 second elapses between each beat.
+//the elapsed time is calculated as BPM/60. So if we're at 60BPM, 1 second elapses between each beat.
 
 using UnityEngine;
 using UnityEngine.UI;
